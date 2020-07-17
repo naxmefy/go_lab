@@ -1,6 +1,6 @@
 # Go Lab
 
-just testing rust.
+just playing with go.
 
 ## todos
 
