@@ -1,0 +1,13 @@
+GET http://localhost:8080
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(
+            response.contentType.mimeType === "application/json",
+            "Expected 'application/json' but received '" + response.contentType.mimeType + "'"
+        );
+        client.assert(response.body.hasOwnProperty("message"), "Cannot find 'headers' option in response");
+        client.assert(response.body['message'] === "Hello, World!", "Response body does not contain 'Hello, World!'")
+    });
+%}
