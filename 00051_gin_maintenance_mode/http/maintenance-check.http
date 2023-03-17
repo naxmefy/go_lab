@@ -1,0 +1,102 @@
+GET http://localhost:8080/internal/maintenance
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("maintenance mode is false", function() {
+        client.assert(response.body.hasOwnProperty("value"), "Cannot find 'value' option in response");
+        client.assert(response.body['value'] === false, "Response body value is not false")
+    });
+%}
+
+###
+
+GET http://localhost:8080
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("public response is 'Hello, World!'", function() {
+        client.assert(response.body.hasOwnProperty("message"), "Cannot find 'message' option in response");
+        client.assert(response.body['message'] === "Hello, World!", "Response body does not contain 'Hello, World!'")
+    });
+%}
+
+###
+
+POST http://localhost:8080/internal/maintenance
+Content-Type: application/json
+
+{
+    "value": true
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+
+###
+
+GET http://localhost:8080/internal/maintenance
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("maintenance mode is true", function() {
+        client.assert(response.body.hasOwnProperty("value"), "Cannot find 'value' option in response");
+        client.assert(response.body['value'] === true, "Response body value is not true")
+    });
+%}
+
+###
+
+GET http://localhost:8080
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 503, "Response status is not 503");
+    });
+    client.test("public response is 'currently in maintenance mode'", function() {
+        client.assert(response.body.hasOwnProperty("message"), "Cannot find 'message' option in response");
+        client.assert(
+            response.body['message'] === "currently in maintenance mode",
+            "Response body does not contain 'currently in maintenance mode'"
+        )
+    });
+%}
+
+###
+
+POST http://localhost:8080/internal/maintenance
+Content-Type: application/json
+
+{
+    "value": false
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+
+###
+
+GET http://localhost:8080/internal/maintenance
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("maintenance mode is false again", function() {
+        client.assert(response.body.hasOwnProperty("value"), "Cannot find 'value' option in response");
+        client.assert(response.body['value'] === false, "Response body value is not true")
+    });
+%}
